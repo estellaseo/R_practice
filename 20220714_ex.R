@@ -88,11 +88,20 @@ hyear <- as.character(as.Date(emp$HIREDATE), '%Y')
 emp[hyear == 1980, 'JOB'] <- 'MANAGER'
 emp
 
+#[ 참고 ] 날짜 포맷 변경 함수 비교
+d1 <- '1980/12/09'
+as.character(as.Date(d1), '%A')
+
+library(lubridate)
+wday(d1, label = T)      #lubridate 함수 이용, 문자열 포맷 변경 가능
+
+
 
 
 # 2. student.csv 파일을 읽고 student 객체 생성 후
 student <- read.csv('student.csv', fileEncoding = 'cp949')
 student
+student$JUMIN <- as.character(student$JUMIN) #숫자형을 문자로 변경하여 전체 출력
 
 # 1) 구유미 학생의 학번, 이름, 학년 출력
 col3 <- colnames(student) %in% c('STUDNO', 'NAME', 'GRADE')
@@ -105,12 +114,12 @@ col4 <- c('NAME', 'GRADE', 'TEL')
 student[student$NAME == stulist, col4]
 
 
-
 # 3) 4학년 학생의 키의 평균(mean 함수 사용)
 # 힌트 : 색인은 오로지 데이터를 찾는 기능, 변환(함수 등의 사용)은 불가
 grade4 <- student$GRADE == 4
 student[grade4, c('HEIGHT', 'GRADE')]
 mean(student[grade4, 'HEIGHT'])
+
 
 # 4) 키가 170 이상인 학생의 이름, 학년, 키 출력
 stulist17 <- student$HEIGHT >= 170
