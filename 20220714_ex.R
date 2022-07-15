@@ -76,7 +76,7 @@ emp[as.character(emp$HIREDATE, '%A') == '월요일', !(colnames(emp) %in% c('MGR
 
 # 5) KING의 매니저 번호를 7839로 수정
 emp[emp$ENAME == 'KING', 'MGR'] <- 7839
-
+emp
 
 # 6) SAL이 2000 이하인 사람은 2500으로 수정
 emp[emp$SAL <= 2000, 'SAL'] <- 2500
