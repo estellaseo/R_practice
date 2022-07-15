@@ -247,11 +247,13 @@ v1
 !(v1 < 3)
 
 
-#[ 포함 연산자 ] - in 연산자
+#[ 포함 연산자 ] - IN 연산자
 #SMITH 또는 SCOTT 선택
 #case 1)
 df1[(df1$ENAME == 'SMITH') | (df1$ENAME == 'SCOTT'), ]
 #case 2)
 df1[df1$ENAME %in% c('SMITH', 'SCOTT'), ]
 
+# NOT IN
+df1[!(df1$ENAME %in% c('SMITH', 'SCOTT')), ]
 
