@@ -101,6 +101,7 @@ stud$DEPTNO <- str_replace_na(stud$DEPTNO, as.character('DEPTNO1'))
 class(stud$DEPTNO1)
 
 
+
 # 3. professor.csv 파일을 읽고
 prof <- read.csv('professor.csv', fileEncoding = 'cp949')
 
@@ -114,12 +115,14 @@ prof$POSITION2 <- str_sub(prof$POSITION, -2)
 
 
 
+
 # 4. data2.csv를 읽고[(for문 없이)]
 df2 <- read.csv('data2.csv', fileEncoding = 'cp949')
 
 # 1) 4호선 라인의 전체 시간의 승차의 총합(승차 인원의 총 합)
 line4 <- as.numeric(str_remove_all(df2[df2$노선번호 == 'line_4', '승차'], ','))
 sum(line4)
+
 
 # 2) 1호선 라인의 9시~12시 시간대까지의 하차의 총합(위치 색인 불가)
 class(df2$시간)    #integer 타입
