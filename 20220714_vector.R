@@ -257,3 +257,4 @@ df1[df1$ENAME %in% c('SMITH', 'SCOTT'), ]
 # NOT IN
 df1[!(df1$ENAME %in% c('SMITH', 'SCOTT')), ]
 
+
