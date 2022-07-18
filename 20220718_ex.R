@@ -16,6 +16,7 @@ prof[str_detect(prof$ID, '[:punct:]'), c('NAME', 'ID')]
 #3) prof ID에서 go가 연속 2회 이상 포함된 사람의 이름, ID 출력
 prof[str_detect(prof$ID,'(go){2,}'), c('NAME', 'ID')]
 
+
 #4) 글자로 시작해서 숫자로 끝나는 ID를 갖는 사람의 이름, ID 출력
 #case 1)
 prof[str_detect(prof$ID, '^[:alpha:].+[:digit:]$'), c('NAME', 'ID')]
@@ -70,4 +71,81 @@ prof[str_detect(prof$ID, '[:punct:]+'), ]
 
 
 
+
 #[ 연습문제 ]
+#1. disease 테이블을 읽고
+df2 <- read.table('data/disease.txt', header = T, fileEncoding = 'cp949')
+
+#1) df2와 동일한 df3 생성 후 각 NA값을 각 컬럼의 최소값으로 수정
+df3 <- df2
+df3$콜레라 <- str_replace_na(df3$콜레라, min(df3$콜레라, na.rm = T))
+df3$장티푸스 <- str_replace_na(df3$장티푸스, min(df3$장티푸스, na.rm = T))
+df3$이질 <- str_replace_na(df3$이질, min(df3$이질, na.rm = T))
+df3$대장균 <- str_replace_na(df3$대장균, min(df3$대장균, na.rm = T))
+df3$A형간염 <- str_replace_na(df3$A형간염, min(df3$A형간염, na.rm = T))
+
+
+# 2) A형간염의 컬럼 이름을 A간염으로 변경(df2에서)
+df2$A간염 <- df2$A형간염 
+df2$A형간염 <- NULL
+
+
+# 3) df2에서 NA를 하나라도 포함한 행 제외
+df2<- df2[!is.na(df2$콜레라), ]
+df2<- df2[!is.na(df2$장티푸스), ]
+df2<- df2[!is.na(df2$이질), ]
+df2<- df2[!is.na(df2$대장균), ]
+df2<- df2[!is.na(df2$A간염), ]
+
+
+
+
+# 2. professor.csv 파일을 읽고
+prof <- read.csv('data/professor.csv', fileEncoding = 'cp949')
+
+#    HPAGE가 없는 교수의 홈페이지 주소를 아래와 같이 수정
+#    http://www.itwill.com/email_id
+
+email_id <- str_remove(prof$EMAIL, '[@].+')
+prof$sub_hpage <- str_c('http://www.itwill.com/', email_id)
+blank_con <- str_detect(prof$HPAGE, 'http://') 
+prof$HPAGE[!blank_con] <- prof$sub_hpage[!blank_con]
+prof$sub_hpage <- NULL
+
+
+
+
+# 3. movie_ex1.csv 파일을 읽고
+df3 <- read.csv('data/movie_ex1.csv', fileEncoding = 'cp949')
+head(df3)
+
+# 주말(토,일) 20,30대 연령층의 이용_비율(%)의 총 합을 출력
+df3$DATE <- as.Date(str_c(df3$년, df3$월, df3$일, sep = '/'), '%Y/%m/%d')
+weekend <- as.character(df3$DATE, '%A') %in% c('토요일', '일요일')
+age_con1 <- df3$연령대 == c('20대', '30대')
+  
+sum(df3[weekend & age_con1, '이용_비율...'])
+
+
+
+
+# 4. subway2.csv 파일을 읽고
+sub <- read.csv('data/subway2.csv', fileEncoding = 'cp949', skip = 1)
+head(sub)
+
+# 1) 환승역의 경우 2호선 라인의 09~10 시간대의 총 승차 인원 확인
+transfer2 <- str_detect(sub$전체, '(2)')  #2호선 환승역
+sum(sub[transfer2 & sub$구분  == '승차', 'X09.10'])
+
+
+# 2) 하차 인원에 대해 아래와 같이 정리
+#   전체      5     6       7      8
+# 서울역(1) 7829	48553	 110250	 233852
+# 시청(1)   4142	19730 	67995	 175458
+
+sub_con <- str_detect(sub$전체, '[:alpha:]') #전체 컬럼에 글자가 포함된 조건
+sub$전체[!sub_con] <- sub$전체[sub_con] #포함 X에 포함 내용 적용
+names(sub)[3:22] <- as.numeric(str_sub(names(sub)[3:22], 2, 3)) #컬럼명 변경
+sub[sub$구분 =='하차', colnames(sub) != '구분'] #조건 출력
+
+
