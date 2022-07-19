@@ -77,9 +77,9 @@ if (emp$SAL >= 3000) {         #length error 발생(벡터 연산 불가)
 
 #두번째 조건
 if (condition1) {
-  yes
+  yes for con1
 } else if (condition2) {
-  yes for con2, no for con2
+  yes for con2, no for con1
 } else {
   no for con1 and con2
 }
