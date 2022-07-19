@@ -11,6 +11,7 @@
 - Sequence
 - Logical operators
 <br/>
+
 #### 2022.07.15
 - List
 - Package stringr - Character manipulation
@@ -18,11 +19,13 @@
 - req function
 - Regular expressions
 <br/>
+
 #### 2022.07.19
 - Arithmetic operators
 - Numeric functions
 - if statement
 - ifelse function
 <br/>
+
 #### 2022.07.20
 - For loop
