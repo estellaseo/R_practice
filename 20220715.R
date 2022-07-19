@@ -231,8 +231,8 @@ str_count(string = ,            #원본 문자열
 
 v1 <- c('abc', 'ab', 'ddddd')
 str_count(v1, 'a')              #a가 포함된 횟수
-str_count(v2, '[ab]')           #a 또는 b가 포함된 횟수
-str_count(v2, '.')              #각 문자열의 크기기
+str_count(v1, '[ab]')           #a 또는 b가 포함된 횟수
+str_count(v1, '.')              #각 문자열의 크기
 
 
 length(v1)                      #벡터 원소의 개수
