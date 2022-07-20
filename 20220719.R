@@ -86,7 +86,6 @@ if (condition1) {
   
 
 
-
 #< ifelse 함수 >
 #벡터 연산 가능
 ifelse(test,    #조건
@@ -101,4 +100,6 @@ ifelse(emp$SAL >= 3000, 'A', 'B')
 
 
 
-
+#[ 행 이름 변경 ]
+rownames(df1) <-df1$date
+df1$date <- NULL
