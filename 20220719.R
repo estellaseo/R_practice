@@ -102,4 +102,4 @@ ifelse(emp$SAL >= 3000, 'A', 'B')
 
 #[ 행 이름 변경 ]
 rownames(df1) <-df1$date
-df1$date <- NULL
+df1$date <- NULL 
