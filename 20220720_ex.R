@@ -149,8 +149,17 @@ for (i in stud$JUMSU) {
     }
   }
 }
-stud$HAKJUM <- grade
-  
+stud$HAKJUM <- str_trim(grade)         #빈공백 제거: str_trim()
+
+
+
+vhakjum <- c()
+for (i in stud$JUMSU) {
+  vbool <- (i >= hak$MIN_POINT) & (i <= hak$MAX_POINT)
+  vhakjum <- c(vhakjum, hak$GRADE[vbool])
+}
+stud$HAKJUM <- str_trim(vhakjum)
+
 
 
 
@@ -161,12 +170,19 @@ stud$HAKJUM <- grade
 # [1] "  *******  "
 # [1] " ********* "
 
-tstar <- '*'
 
+tstar <- '*'
 for (i in 1:5) {
   star_order <- str_pad(tstar, 11, 'both')
   print(star_order)
   tstar <- str_c(tstar, '**')
+}
+
+
+for (i in 1:5) {
+  v1 <- str_pad(' ', 6-i, 'left', ' ')
+  v2 <- str_pad('*', 2*i-1, 'left', '*')
+  print(str_c(v1, v2, v1))
 }
 
 
