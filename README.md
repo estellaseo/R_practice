@@ -25,7 +25,17 @@
 - Numeric functions
 - if statement
 - ifelse function
+- rownames function
 <br/>
 
 #### 2022.07.20
 - For loop
+- While loop
+<br/>
+
+#### 2022.07.21
+- Matrix
+- Array
+- Function(사용자 정의 함수)
+- Apply functions - Repetitively perform an action on multiple chunks of data
+- Package sqldf
