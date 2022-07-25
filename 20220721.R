@@ -71,9 +71,11 @@ a1[, , 1, drop = F]      #1층 선택 <- 차원 유지)
 
 #[ 사용자 정의 함수 ]
 #사용자가 직접 정의하는 함수
+#출력값은 하나의 객체, 여러개일 경우 이를 return에서 하나로 묶어서 출력
 
 함수명 <- function(인수) {
   함수본문
+  return(리턴객체)
 }
 
 f1 <- function(x) {
@@ -87,6 +89,73 @@ f2 <- function(x, sep = ',') {
 }
 f2('25,000')
 
+
+#1) 단일 인수에 대한 함수 정의
+f1 <- function(x) {
+  x + 3
+}
+
+f1(100)                        #return 생략 가능
+
+f1 <- function(x) {
+  return(x + 3)
+}
+
+
+#if문을 포함하는 사용자 정의 함수
+f2 <- function(x) {
+  if (x > 10) {
+    return('A')
+  } else {
+    return('B')
+  }
+}
+
+
+#2) 다중 인수에 대한 함수 정의
+f3 <- function(x, y, z) {
+  x + y + z
+}
+
+f3(1, 10, 100)                #순서대로 전달
+
+
+#각 인수의 기본값 설정 
+f3 <- function(x, y, z = 0) {
+  x + y + z
+}
+
+f3(1, 100)
+
+
+#함수 안에 for문을 갖는 경우
+f4 <- function(x) {
+  if (x > 10) {
+    'A'
+  } else {
+    'B'
+  }
+}                           #f4는 벡터 연산 불가
+
+
+#해결방법 1) scalar input + sapply function
+sapply(c(10, 1), f4)
+
+
+# 2) vertor input
+f4 <- function(x) {
+  v1 <- c()
+  for (i in x) {
+    if (i > 10) {
+      v1 <- c(v1, 'A')
+    } else {
+      v1 <- c(v1, 'B')
+    }
+  }
+  return(v1)
+}
+
+f4(c(10, 1))
 
 
 
@@ -120,6 +189,7 @@ apply(m1, 1, sum, na.rm = T)
 
 #2. sapply
 #- 벡터의 원소별 반복
+#- 주로 벡터 리턴
 
 sapply(X,                 #데이터(1차원)
        FUN,               #적용함수
@@ -150,6 +220,27 @@ m1 <- matrix(c('a,b,c', 'AA,BB,CC', 'de,fg,hi', 'er,erm,er'), nrow = 2)
 
 sapply(m1, f_split)
 apply(m1, c(1, 2), f_split)
+
+
+
+#3. lapply
+#- 1차원의 원소별 fetch
+#- 주로 리스트 리턴
+lapply(exam$STUDNO, f_hakjum)        #결과 리스트 리턴
+
+
+
+#4. tapply
+#- 그룹 연산 
+#- 결과 벡터 리턴 
+
+tapply(vector,                      #연산대상
+       index,                       #그룹핑 대상
+       function,
+       ...)
+
+#예시) 부서별 평균 급여
+tapply(emp$SAL, emp$DEPTNO, mean)
 
 
 
