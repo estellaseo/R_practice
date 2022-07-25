@@ -142,57 +142,38 @@ sqldf(vsql2)
 #[ 실습문제 ]
 # 1.employment.csv 파일을 읽고
 df1 <- read.csv('data/employment.csv', fileEncoding = 'cp949')
-df1 <- as.data.frame(df1)
-head(df1)
 
 
-#컬럼명 변경
-colnames(df1) <- str_c(colnames(df1), df1[1 , ], sep = ' ')
+#column names, row names 변경
+temp_col <- str_sub(colnames(df1)[-1], 2, 5)
+colnames(df1)[-1] <- str_c(temp_col, unlist(df1[1, -1]), sep = '_')
+rownames(df1) <- unlist(df1[1])
 df1 <- df1[-1, ]
-
-#(,) 제거
-f1 <- function(x) {
-  str_remove_all(x, ',')
-}
-
-#(-) 제거
-f2 <- function(x) {
-  if (str_detect(x, '-')) {
-    0 
-  } else {
-    x
-  }
-}
-
-df1 <- apply(df1, c(1, 2), f1)
-df1[, -1] <- apply(df1[, -1], c(1, 2), f2)
 
 
 # 1) 연도별 총근로일수의 평균
-df1_days <- df1[ , str_detect(colnames(df1), '총근로일수')]
+df2 <- df1[str_detect(colnames(df1), '총근로일수')]
+#결측치 제거
+df2[df2 == '-'] <- NA
+#숫자 변형
+df2[,] <- apply(df2, 2, as.numeric)
 
-mean_total <- c()
-for (i in 1:ncol(df1_days)) {
-  mean_total <- c(mean_total, mean(as.numeric(df1_days[ ,i]), na.rm = T))
-}
-round(mean_total, 2)
+
+colMeans(df2, na.rm = T)
 
 
 
 # 2) 고용형태별 월급여액 평균
 # (전체근로자와 전체근로자(특수형태포함)가 다른 그룹이 되도록)
-head(df1)
-tdf1 <- as.data.frame(t(df1))
-colnames(tdf1) <- tdf1[1, ]
-tdf1 <- tdf1[-1, ]
+df3 <- df1             #백업
+df3[df3 == '-'] <- NA
+#(,) 제거
+df3 <- apply(df3, 2, str_remove_all, '[:punct:]')
+#숫자 변형
+df3 <- apply(df3, 2, as.numeric)
 
-df1_mon <- tdf1[str_detect(rownames(tdf1), '월급여액'), ]
 
-mean_sal <- c()
-for (i in 1:ncol(df1_mon)) {
-  mean_sal <- c(mean_sal, mean(as.numeric(df1_mon[ ,i]), na.rm = T))
-}
-round(mean_sal, 2)
+rowMeans(df3, na.rm = T)
 
 
 
@@ -213,7 +194,34 @@ for (i in 1:nrow(sub)) {
   }
 }
 
-sub_on <- sub[sub$구분 =='승차', ]
+
+# 함수화
+f_fillna <- function(x) {
+  vresult <- c()
+  for (i in 1:length(x)) {
+    if (x[i] == '') {
+      vresult <- c(vresult, x[max(i-1,1)])  
+      # max(i-1,1) : i가 1일때 0이 색인되는것 방지
+    } else {
+      vresult <- c(vresult, x[i])
+    }
+  }
+  return(vresult)
+}
+
+f_fillna(c(1,"",2,""))
+f_fillna(c("",2,"",3))
+
+# 이전값 가져오는 함수
+install.packages('zoo')
+zoo::na.locf(c(1,NA,2,NA))               # 이전값 가져오기
+zoo::na.locf(c(NA,2,NA,3))               # 첫번째 NA 생략
+zoo::na.locf(c(NA,2,NA,3), na.rm = F)    # 첫번째 NA 표현
+zoo::na.locf(c(NA,2,NA,3), fromLast = T) # 이후값 가져오기
+
+
+
+sub_on <- sub[sub$구분 =='승차', -2]
 str(sub_on)
 rowSums(sub_on[3:ncol(sub_on)])
 sub_on$승차합 <- rowSums(sub_on[3:ncol(sub_on)])
