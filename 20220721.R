@@ -162,6 +162,7 @@ f4(c(10, 1))
 #[ apply 계열 함수 ]
 #- 반복을 도와주는 함수
 #- 원소별 반복, 행별 반복, 컬럼별 반복, 그룹별 반복
+#- 함수 일괄 적용을 위한 문법(for문 대체)
 #- apply, sapply, lapply, tapply, mapply :총 다섯가지
 
 
@@ -232,15 +233,38 @@ lapply(exam$STUDNO, f_hakjum)        #결과 리스트 리턴
 
 #4. tapply
 #- 그룹 연산 
+#- 하나의 대상에 대한 그룹 연산 가능
+#- 하나의 그룹핑 컬럼만 가능
+#- 하나의 연산 함수 가능
 #- 결과 벡터 리턴 
 
-tapply(vector,                      #연산대상
-       index,                       #그룹핑 대상
-       function,
+tapply(X,                           #연산 대상
+       INDEX,                       #그룹핑 대상
+       FUN = NULL, 
        ...)
+
 
 #예시) 부서별 평균 급여
 tapply(emp$SAL, emp$DEPTNO, mean)
+
+
+
+#5. mapply
+#- 여러 대상에 함수를 적용
+
+mapply(FUN, 
+       ...)
+       
+       
+#예시) 두 벡터에 대해 같은 위치에 있는 원소의 합 출력
+v1 <- 1:10
+v2 <- seq(10, 100, 10)
+
+f_sum <- function(x, y) {
+  x + y
+}
+
+mapply(f_sum, v1, v2)               #v1, v2 각각 fetch 가능 
 
 
 
