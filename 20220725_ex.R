@@ -28,6 +28,8 @@ f_sal <- function(x) {
 
 sapply(emp$SAL, f_sal)
 
+
+
 #2) vector input
 f_sal2 <- function(x) {
   vresult <- c()
@@ -63,7 +65,6 @@ f_sal3 <- function(x) {
 
 f_sal3('7369')
 sapply(emp$EMPNO, f_sal3)
-
 
 
 
@@ -106,6 +107,7 @@ f_hakjum('9715')
 sapply(exam$STUDNO, f_hakjum)
 
 
+
 #2) vector input
 f_hakjum2 <- function(x) {
   vhakjum <- c()
@@ -123,25 +125,26 @@ f_hakjum2(exam$STUDNO)
 
 
 #[ 실습문제 ]
-# 1. gogak.csv, gift.csv 파일을 읽고 고객번호를 입력하면 
-# 가져갈 수 있는 가장 좋은 상품 한 개 리턴하는 함수 생성
+#1. gogak.csv, gift.csv 파일을 읽고 고객번호를 입력하면 
+#가져갈 수 있는 가장 좋은 상품 한 개 리턴하는 함수 생성
 gogak <- read.csv('data/gogak.csv', fileEncoding = 'cp949')
 gift <- read.csv('data/gift.csv', fileEncoding = 'cp949')
 
-# 1) scalar input
+#1) scalar input
 f_gift1 <- function(x) {
   vpoint <- gogak[gogak$GNO == x, 'POINT']
   con1 <- (vpoint >= gift$G_START) & (vpoint <= gift$G_END)
-  gift[con1, 'GNAME']
+  vgift <- gift[con1, 'GNAME']
+  return(vgift)
 }
 sapply(gogak$GNO, f_gift1)
 
 
-# 2) vector input
+#2) vector input
 f_gift2 <- function(x) {
   vresult <- c()
-  for (i in gogak$GNO) {
-    vpoint <- gogak[gogak$GNO == i, 'POINT']
+  for (i in x) {
+    vpoint <- gogak[x == i, 'POINT']
     con1 <- (vpoint >= gift$G_START) & (vpoint <= gift$G_END)
     vresult <- c(vresult, gift[con1, 'GNAME'])
   }
@@ -151,29 +154,32 @@ f_gift2(gogak$GNO)
 
 
 
-# 2. student.csv, professor.csv 파일을 읽고
-# 학번을 입력하면 지도교수명 출력하는 함수 생성
-# 단, 지도교수가 없는 경우 지도교수없음 출력
+
+#2. student.csv, professor.csv 파일을 읽고
+#학번을 입력하면 지도교수명 출력하는 함수 생성
+#단, 지도교수가 없는 경우 지도교수없음 출력
 stud <- read.csv('data/student.csv', fileEncoding = 'cp949')
 prof <- pread.csv('data/professor.csv', fileEncoding = 'cp949')
 
-# 1) scalar input
+#1) scalar input
 f_prof <- function(x) {
   vprofno <- stud[stud$STUDNO == x, 'PROFNO']
   if (!is.na(vprofno)) {
     vprofname <- prof[prof$PROFNO == vprofno, 'NAME']
   } else {
-    '지도교수 없음'
+    vprofname <- '지도교수 없음'
   }
+  return(vprofname)
 }
+
 sapply(stud$STUDNO, f_prof)
 
 
-# 2) vector input
+#2) vector input
 f_prof2 <- function(x) {
   vprofname <- c()
-  for (i in stud$STUDNO) {
-    vprofno <- stud[stud$STUDNO == i, 'PROFNO']
+  for (i in x) {
+    vprofno <- stud[x == i, 'PROFNO']
     if (!is.na(vprofno)) {
       vprofname <- c(vprofname, prof[prof$PROFNO == vprofno, 'NAME'])
     } else {
@@ -187,14 +193,15 @@ f_prof2(stud$STUDNO)
 
 
 
-# 3. emp.csv 파일을 읽고 
+
+#3. emp.csv 파일을 읽고 
 emp <- read.csv('data/emp.csv', fileEncoding = 'cp949')
 
-# 1) 부서별 최대연봉출력
+#1) 부서별 최대연봉출력
 tapply(emp$SAL, emp$DEPTNO, max)
 
 
-# 2) 위에 해당하는사람(부서별 최대연봉자)의 이름, 급여, 부서번호 출력
+#2) 위에 해당하는사람(부서별 최대연봉자)의 이름, 급여, 부서번호 출력
 max_group <- tapply(emp$SAL, emp$DEPTNO, max)
 
 vname <- c()
@@ -206,15 +213,15 @@ for (i in max_group) {
   vdeptno <- c(vdeptno, emp[emp$SAL == i, 'DEPTNO'])
 }
 
-df1 <- data.frame(vname, vsal, vdeptno)
+df1 <- data.frame(ENAME = vname, SAL = vsal, DEPTNO =vdeptno)
 
 
 
-# 3) 다음과 같은 형태로 출력(부서별 이름 나열, 어떤 형태도 상관X)
-#                              ENAME
-# 10                    CLARK_KING_MILLER
-# 20         SMITH_JONES_SCOTT_ADAMS_FORD
-# 30 ALLEN_WARD_MARTIN_BLAKE_TURNER_JAME
+#3) 다음과 같은 형태로 출력(부서별 이름 나열, 어떤 형태도 상관X)
+#                            ENAME
+#10                    CLARK_KING_MILLER
+#20         SMITH_JONES_SCOTT_ADAMS_FORD
+#30 ALLEN_WARD_MARTIN_BLAKE_TURNER_JAME
 
 DEPTNO <- seq(10, 30, 10)
 ENAME <- c()
@@ -226,21 +233,23 @@ df2 <- data.frame(ENAME)
 rownames(df2) <- DEPTNO
 
 
-# 4. card_history.csv 파일을 읽고
-# 아래와 같이 일자별(NUM) 각 지출품목의 지출 비율 출력
+
+
+#4. card_history.csv 파일을 읽고
+#아래와 같이 일자별(NUM) 각 지출품목의 지출 비율 출력
 card <- read.csv('data/card_history.csv', fileEncoding = 'cp949')
 
 
-#    식료품  의복   외식비  책값 온라인소액결제 의료비
-# 1   8.63  63.61   3.83    12.90           2.49   8.54
-# 2  11.57  62.74   3.65    13.55           1.72   6.77
-# 3  14.76  53.09   4.50    13.20           4.50   9.96
+#   식료품  의복   외식비  책값 온라인소액결제 의료비
+#1   8.63  63.61   3.83    12.90           2.49   8.54
+#2  11.57  62.74   3.65    13.55           1.72   6.77
+#3  14.76  53.09   4.50    13.20           4.50   9.96
 
 card[ , ] <- as.numeric(sapply(card, str_remove_all, ','))
-card$total <- rowSums(card[-1], na.rm = T)
+vtotal <- rowSums(card[-1], na.rm = T)
 
 f_ratio <- function(x) {
-  round(x/card$total*100, 2)
+  round(x/vtotal*100, 2)
 }
 
 df3 <- apply(card[-1], 2, f_ratio)
