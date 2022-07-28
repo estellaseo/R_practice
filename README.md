@@ -37,5 +37,24 @@
 - Matrix
 - Array
 - Function(사용자 정의 함수)
-- Apply functions - Repetitively perform an action on multiple chunks of data
+- Apply functions - aapply, sapply, lapply, tapply, mapply
 - Package sqldf
+<br/>
+
+#### 2022.07.26
+- unlist function
+- merge function
+- aggregate function
+- ddply function
+<br/>
+
+#### 2022.07.27
+- order functions
+- DB connection
+<br/>
+
+#### 2022.07.28
+- break and next Statement
+- data input/output
+- which functions
+- sampling
