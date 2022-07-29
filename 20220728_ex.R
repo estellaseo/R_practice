@@ -43,6 +43,7 @@ head(df_seoul)
 # \W: 문자, 숫자, _가 아닌 것 
 # \s: 공백 
 # \S: 공백이 아닌 것 
+# [[a-z][:punct:]]: 영문자, 특수문자 동시 전달
 
 
 #정규 표현식으로 그룹핑하여 전달
@@ -88,12 +89,25 @@ vdays <- as.character(as.Date(vdate), '%A')
 
 df_age <- data.frame(날짜 = vdate, 요일 = vdays, 
                      연령대 = movie$연령대, 이용비율 = movie$이용_비율...)
+head(df_age)
 
 df_age2 <- ddply(df_age, .(요일, 연령대), summarise, 비율 = sum(이용비율))
-ddply(df_age2, .(요일), subset, 비율 == max(비율))
+df_age3 <- ddply(df_age2, .(요일), subset, 비율 == max(비율))
+
+#요일순 나열
+df_age3[c(4, 7, 3, 2, 1, 6, 5), ]    #indexing을 통한 직접 나열
+
 
 
 # 2) 서울시 내에서 구별로 이용비율이 가장 높은 연령대
+#서울시가 포함된 데이터 추출(%like%)
+install.packages('DescTools')
+library(DescTools)
+
+
+movie[movie$지역.시도 %like% '서울%', ]
+movie[str_detect(movie$지역.시도, '서울'), ]
+
 movie[movie$지역.시도 == '서울특별시', ]
 df_gu <- data.frame(movie[movie$지역.시도 == '서울특별시', 
                     c('지역.시군구', '연령대', '이용_비율...')])
@@ -115,6 +129,7 @@ ddply(df_gu2, .(지역.시군구), subset, 비율 == max(비율))
 proj <- read.csv('data/project_songpa_data.csv', fileEncoding = 'cp949')
 head(proj)
 proj$name[is.na(str_extract(proj$name, '[가-힣0-9]+동'))]
+proj$name[is.na(str_extract(proj$name, '[가-힣0-9]+[동역]'))] #동 or 역
 proj[proj$name == '잠실나루역', 'name'] <- '잠실동'
 
 vdong <- str_remove(str_extract(proj$name, '[가-힣0-9]+동'), '[0-9]+')
@@ -122,5 +137,4 @@ df_proj <- data.frame(동 = vdong, LAT = as.numeric(proj$LAT),
                       LON = as.numeric(proj$LON))
 
 ddply(df_proj, .(동), summarise, mean_LAT = mean(LAT), mean_LON = mean(LON))
-
-      
+  
