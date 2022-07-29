@@ -149,6 +149,15 @@ apply(m1, 1, which.max)            #행별로 최대값 위치
 
 
 
+#[ 데이터 분석 과정 ]
+#데이터 수집 > 데이터 전처리(이상치, 결측치 처리 등) >
+# 모델링(생성 및 튜닝) > 모델 평가 > 시스템 적용
+
+#모델 평가
+#- 전체 data set의 약 70%: train data
+#- 나머지 data set: test data
+
+
 #[ Sampling ]
 #데이터 분석 시 예측 모델링의 정확도(예측 점수)를 확인하기 위함
 #train data and test data have to be separated
@@ -164,11 +173,22 @@ sample(x,                          #데이터
 
 
 #1) row number
-rn <- sample(1:150, size = 105)    #random numbers for indexing
+#random numbers for indexing
+rn <- sample(1:nrow(iris), size = nrow(iris) * 0.7) 
 
-iris[rn, ]                         #train data set (70%)
-iris[-rn, ]                        #test data set (30%)
+iris_train <- iris[rn, ]           #train data set (70%)
+iris_test <- iris[-rn, ]           #test data set (30%)
 
+#size
+nrow(iris_train)
+nrow(iris_test)
+
+#class별 비율
+table(iris$Species)
+table(iris_train$Species)          #불균등하게 추출될 수 있음
+table(iris_test$Species)
+#분석 전에 불균등이 정도 이상일 경우 균등하게 만들어줄 필요가 있음
+#(sampleBy 참고)
 
 
 #2) group number
@@ -178,5 +198,65 @@ iris[rn2 == 1, ]                   #train data set(70%)
 iris[rn2 == 2, ]                   #test data set(70%)
 
 table(rn2)                         #종류별 count
+
+
+
+
+#2. doBy::sampleBy
+library(doBy)
+
+sampleBy(formula = ,               # ~ Y(종속변수 or 결과변수)
+         frac = ,                  #샘플링비율
+         replace = F,              #반복추출 여부
+         data = )                  #데이터셋
+
+
+#train data set
+iris_train2 <- sampleBy(~Species, frac = 0.7, data = iris)
+
+#test data set
+#row number 기반
+rn2 <- as.numeric(str_extract(rownames(iris_train2), '[0-9]+'))
+iris_test2 <- iris[-rn2, ]
+
+#차집합 기반
+iris_test2 <- setdiff(iris, iris_train2)
+
+#size
+nrow(iris_train2)                  #105개
+nrow(iris_test2)                   #45개
+
+#class별 비율
+table(iris_train2$Species)         #종속변수 비율 균등
+
+
+
+
+#3. caret::createDataPartition
+install.packages('caret')
+library(caret)
+
+createDataPartition(y,             #종속변수
+                    times = 1,     #생성 파티션 수
+                    p = 0.5,       #추출 비율(train)
+                    list = T,      #값 출력형태(T: 리스트 출력)
+                    groups = min(5, length(y)))
+
+
+rn3 <- createDataPartition(iris$Species, p = 0.7, list = F)
+iris_train3 <- iris[rn3, ]
+iris_test3 <- iris[-rn3, ]
+
+#size
+nrow(iris_train3)                  #105개
+nrow(iris_test3)                   #45개
+
+#class별 비율
+table(iris_train3$Species)         #종속변수 비율 균등
+
+
+#TIP)
+#회기, 시계열 -> R이 용이한 경향이 있음
+
 
 
