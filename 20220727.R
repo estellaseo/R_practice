@@ -1,6 +1,4 @@
 #[ 정렬 ]
-#stack, unstack
-#wide data, long data
 
 #1. order
 order(...,                                  #정렬대상(벡터)
