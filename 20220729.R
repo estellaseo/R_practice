@@ -165,19 +165,20 @@ melt(m11, id.vars = c('year', 'mon'), na.rm = T)
 
 
 #1) unstack
+#- 단점
 
 
 
-#2) reshape2::dcase()
+#2) reshape2::dcast()
 dcast(
   data,                            #데이터
   formula,                         #행방향 배치 컬럼명 ~ 열방향 배치 컬럼명
-  fun.aggregate = NULL,
-  ...,
-  margins = NULL,
-  subset = NULL,
-  fill = NULL,
-  drop = TRUE,
+  fun.aggregate = NULL,            #요약함수
+  ...,                             #요약함수의 추가 옵션
+  margins = NULL,                  #총계 출력 여부
+  subset = NULL,                   #dcast 결과 조건 전달
+  fill = NULL,                     #NA 대치값
+  drop = TRUE,                     #모든 값이 NA인 행 제거 여부
   value.var = guess_value(data)    #value 컬럼명
 )
 
@@ -186,14 +187,55 @@ install.packages('googleVis')
 library(googleVis)
 
 #예시) cross table
+#멀티 컬럼 표현 불가
 Fruits
 dcast(Fruits, Fruit ~ Year, value.var = 'Sales')
+dcast(Fruits, Fruit ~ Year + Location, value.var = 'Sales')
+#불가 예시(Available in Python)
+dcast(Fruits, Fruit ~ Year + Location, value.var = c('Sales', 'Profit'))
 
 
-#예시) dcast_ex1.csv 파일을 읽고 교차표 작성
+#예제) dcast_ex1.csv 파일을 읽고 교차표 작성
 df1 <- read.csv('data/dcast_ex1.csv')
 dcast(df1, name ~ info, value.var = 'value')
 dcast(df1, name ~ info)
+
+
+#예제) margins
+#지점별 메뉴별 수량 교차표
+ex1 <- read.csv('data/dcast_ex3.csv', fileEncoding = 'cp949')
+head(ex1)
+dcast(ex1, 지점 ~ 이름, value.var = '수량')
+#     지점 latte mocha         #각 value 자리에 여러 값이 오는 경우
+# 1    A     2     2           #그룹 함수로 요약될 필요가 있음
+# 2    B     2     2           #요약함수 생략 시 자동으로 length(count) 계산
+
+#해결방법
+dcast(ex1, 지점 ~ 이름, fun.aggregate = sum, value.var = '수량')
+
+#TOTAL 표현
+dcast(ex1, 지점 ~ 이름, 
+      fun.aggregate = sum, 
+      value.var = '수량', 
+      margins = T)
+
+dcast(ex1, 지점 ~ 이름, 
+      fun.aggregate = mean, 
+      value.var = '수량', 
+      margins = T)                #fun.aggregate에 따른 연산 결과값  
+
+
+#예제) fill argument 
+ex3 <- read.csv('data/dcast_ex2.csv')
+ex3 <- ex3[-6, ]
+dcast(ex3, year ~ name, value.var = 'qty', 
+      fill = 0)                   #NA 값 0으로 리턴
+
+
+#예제) subset
+dcast(ex2, 월 ~ 이름, value.var = '성취도', subset = .(월 < 3))
+
+
 
 
 
@@ -210,8 +252,11 @@ f1 <- function(x) {
 }
 
 
+
 #[ 참고 ] package unload
 library(plyr)
 detach('package:plyr', unload = T)
+
+
 
 
