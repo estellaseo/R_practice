@@ -50,20 +50,25 @@ df1 <- read.csv('data/교습현황.csv', fileEncoding = 'cp949', skip = 1)
 head(df1)
 
 #필요한 컬럼 선택
-df1_n <- df1[-(1:4)]
+df1_n <- df1[, -c(1:4)]
 
 #stack
+library(reshape2)
 df1_s <- melt(df1_n, id.vars = '교습과정',
      variable.name = '연도', value.name = '매출')
 
 #컬럼 정리
+library(stringr)
 df1_s$매출 <- as.numeric(str_remove_all(df1_s$매출, ','))
 df1_s$year <- str_sub(df1_s$연도, 2, 5)
 df1_s$month <- str_remove(str_sub(df1_s$연도, 7), '.$')
+df1_s$month <- as.numeric(df1_s$month)
+unique(df1_s$month)
 df1_s$연도 <- NULL
 
 
 # 1) 교습과정별 연도별 매출 총액 확인
+library(plyr)
 ddply(df1_s, .(교습과정, year), summarise, VSUM = sum(매출))
 
 
@@ -81,6 +86,7 @@ ddply(df1_mon, .(교습과정), subset, VMON_SUM == max(VMON_SUM))
 df2 <- read.csv('data/부동산_매매지수현황.csv', 
                 fileEncoding = 'cp949', skip = 1)
 head(df2)
+View(df2)
 
 #컬럼 정리
 df2 <- df2[-2, ]
@@ -95,14 +101,18 @@ df2_s <- melt(df2, id.vars = '연도',
 
 df2_s$year <- str_sub(df2_s$연도, 1, 4)
 df2_s$지수 <- as.numeric(df2_s$지수)
-df2_s <- df2_s[c(4, 2, 3)]
+df2_s$구분 <- str_sub(df2_s$지역, 4)
+df2_s$지역 <- str_sub(df2_s$지역, 1, 2)
+df2_s <- df2_s[c(4, 2, 5, 3)]
 head(df2_s)
 
 
 # 1) 지역별로 매매지수가 가장 활발한 연도 출력
-df2_act <- df2_s[str_detect(df2_s$지역, '활발함'), ]
+df2_act <- df2_s[str_detect(df2_s$구분, '활발함'), ]
+head(df2_act)
 
-df2_act2 <- ddply(df2_act, .(지역, year), summarise, 매매지수 = sum(지수))
+df2_act2 <- ddply(df2_act, .(지역, year), summarise, 
+                  매매지수 = round(mean(지수), 3))
 ddply(df2_act2, .(지역), subset, 매매지수 == max(매매지수))
 
 
@@ -111,9 +121,11 @@ ddply(df2_s, .(year, 지역), summarise, 지수_평균 = round(mean(지수), 3))
 
 
 # 3) 연도별 활발함이 높은 순서대로 상위 3개 지역 출력
-df2_act3 <- ddply(df2_act, .(year, 지역), summarise, 매매지수 = sum(지수))
+df2_act3 <- ddply(df2_act, .(year, 지역), summarise, 
+                  매매지수 = round(mean(지수), 3))
 df2_rank <- ddply(df2_act3, .(year), mutate, 
                   순위 = rank(-매매지수, ties.method = 'min'))
+library(doBy)
 orderBy(~year + 순위, df2_rank[df2_rank$순위 %in% c(1, 2, 3), ])
 
 
