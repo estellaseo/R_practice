@@ -105,7 +105,7 @@ library(reshape2)
 
 #1) stack
 #- 기본함수
-#- 단점: 고정 컬럼 지정 불가
+#- 단점: 고정 열 컬럼 지정 불가
 stack(x,                          #원본 데이터 
       select,                     #stack 컬럼 전달 및 제외
       drop=FALSE, 
@@ -165,11 +165,15 @@ melt(m11, id.vars = c('year', 'mon'), na.rm = T)
 
 
 #1) unstack
-#- 단점
-
+#- 단점: 고정 행 컬럼 지정 불가
+require(stats)
+formula(PlantGrowth)
+unstack(PlantGrowth)
 
 
 #2) reshape2::dcast()
+#notice: 다음 버전부터 data.table::dcast()
+
 dcast(
   data,                            #데이터
   formula,                         #행방향 배치 컬럼명 ~ 열방향 배치 컬럼명
