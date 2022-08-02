@@ -192,10 +192,12 @@ for (i in 1:(nrow(ORD_m45)-1)) {
 }
 length(culist)
 
-
-ORD_m$이전월 <- data.table::shift(ORD_m$주문총액)
+library(data.table)
+library(plyr)
+ddply(ORD_m, .(회원번호), transform, 이전월 = shift(주문총액))
 ORD_m5 <- ORD_m[ORD_m$주문월 == '05', ]
 ORD_m5[ORD_m5$주문총액 < ORD_m5$이전월 * 0.5, '회원번호']
+
 
 
 
@@ -217,3 +219,5 @@ ORD %>%
   filter(주문월 == '05') %>%
   filter(TOTAL < 이전월 * 0.5) %>%
   select(회원번호)
+
+
