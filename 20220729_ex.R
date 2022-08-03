@@ -91,7 +91,8 @@ View(df2)
 #컬럼 정리
 df2 <- df2[-2, ]
 colnames(df2)[1] <- '연도'
-colnames(df2)[seq(2, ncol(df2), 2)] <- str_sub(colnames(df2)[seq(2, ncol(df2), 2)], 1, 2)
+colnames(df2)[seq(2, ncol(df2), 2)] <- str_sub(colnames(df2)[seq(2, ncol(df2), 
+                                                                 2)], 1, 2)
 colnames(df2)[seq(3, ncol(df2), 2)] <- colnames(df2)[seq(2, ncol(df2), 2)]
 colnames(df2)[-1] <- str_c(colnames(df2)[-1], df2[1, -1], sep = '_')
 df2 <- df2[-1, ]
