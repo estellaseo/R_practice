@@ -213,7 +213,7 @@ g1 <- ggplot(cctv4, aes(x = 년도, y = 발생, color = 구)) +
         axis.title.y = element_text(size = 12,
                                     color = 'black',
                                     vjust = 1,
-                                    angle = 0)) +
+                                    angle = 0)) +       #Y 라벨 방향
   geom_text(aes(label = 발생), hjust = 1, vjust = 2, 
             color = 'black', size = 2.5)
 
@@ -321,9 +321,29 @@ ggplot(cctv2, aes(x = 총합)) +
 
 #6. 파이차트 pie chart
 
+#- R 기본 파이차트
+#- plotrix::pie3D()
+#- ggplot2::geom_bar + coord_polar
 
+df1 <- data.frame(value = c(10, 25, 15, 40),
+                  group = c(str_c('G', 1:4)))
 
-
+dev.new()
+ggplot(df1, aes(x = 2,                         #파이 너비                    
+                y = value,                     #파이 크기를 결정하는 벡터
+                fill = group)) +               #파이 구분 벡터
+  geom_bar(stat = 'identity',                  #y값 선언시 필요
+            color = 'white') +                 #구분선 색상
+  coord_polar(theta = 'y',                     #파이 크기를 결정하는 변수
+              start = 0,                       #시작 위치
+              direction = ) +                  #진행방향
+                                               #(1: 기본(반시계), -1: 시계)
+  theme_void() +
+  geom_text(aes(label = value),                #라벨 표현할 벡터
+            position = position_stack(vjust = 0.5)) + #라벨 위치
+  scale_fill_manual(values = sequential_hcl(4, 'sunset')) +
+  xlim(0.8, 2.5)                               #너비 제한 
+  
 
 
 
