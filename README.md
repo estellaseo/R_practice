@@ -58,3 +58,31 @@
 - data input/output
 - which functions
 - sampling
+<br/>
+
+#### 2022.07.29
+- Profile management
+- rank function
+- Operators(union, intersect, setdiff, setequal)
+- stack, melt
+- unstack, dcast
+- function list in packages: ls()
+<br/>
+
+#### 2022.08.01
+- Package dplyr
+<br/>
+
+#### 2022.08.02
+- Data Visualization(plot, bar plot, box plot, histogram)
+<br/>
+
+#### 2022.08.03
+- Data Visualization(ggplot2)
+<br/>
+
+#### 2022.08.08
+- Classification
+
+
+
