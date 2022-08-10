@@ -18,13 +18,24 @@
 #ex) 군집분석 Clustering, 연관분석(추천 알고리즘), etc.
 
 
+
+#알고리즘 방식에 따른 Machine Learning 분류
+#1) 트리기반 모델: DT(Decision Tree), RF(Random Forest)
+#2) 거리기반 모델: KNN, clustering(k-means)
+#3) 회귀기반 모델: linear regression, SVM
+#4) 신경망기반 모델: ANN, CNN, RNN
+#5) 확률기반 모델: Naive Bayes
+
+
+
+
 #[ Classification: 분류 분석 ]
 #Y (factor: 범주형)을 예측
 #X -> Y 분류를 위한 패턴 정교화
 
 
 #1. Decision Tree: 의사결정나무
-#-  분석기법이 간단하고 해석이 용이함
+#-  분석기법이 간단하고 해석이 용이함-
 #- 시각화 가능 
 #- 비통계적 모델
 #- 통계적 평가 장치가 없음
