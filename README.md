@@ -82,7 +82,19 @@
 <br/>
 
 #### 2022.08.08
-- Classification
+- Decision Tree
+<br/>
+
+#### 2022.08.09
+- Impurity
+- Random Forest
+<br/>
+
+#### 2022.08.10
+- KNN
+- Data Scaling
+
+
 
 
 
