@@ -55,6 +55,7 @@ sum(cancer_result4 == cancer_test$diagnosis) / nrow(cancer_test) * 100   #93.57
 
 
 
+
 #[ 실습 문제 ]
 # 1. ex_test1.csv 파일을 읽고
 ex1 <- read.csv('data/ex_test1.csv', fileEncoding = 'cp949')
@@ -76,13 +77,19 @@ for (i in ex1$주문금액){
 
 ex1$point  <- point
 
+
 # 2) 회원번호별 총 주문금액과 총 포인트 금액 확인
 library(plyr)
 ex1_d <- ddply(ex1, .(회원번호), summarise, 
                총주문금액 = sum(주문금액), 총포인트 = sum(point))
 
+
 # 3) 회원별 주문금액을 확인하고 총 주문금액 기준 상위 30%의 회원 확인
+# sol1)
 ex1_d[rank(ex1_d$총주문금액, ties.method = 'min'), ][1:abs(nrow(ex1_d)*0.3), ]
+
+# sol2)
+ex1_d[order(ex1_d$총주문금액, decreasing = T), ][1:trunc(nrow(ex1_d) * 0.3), ]
 
 
 
@@ -100,35 +107,50 @@ getmode(c(1,1,1,1,2,3))    # 최빈값 확인
 
 
 # 1) 중복 제거한 값이 몇 개인지 확인(unique value)
-library(reshape2)
-ex2_m <- melt(ex2, id.vars = '월', variable.name = '년도', value.name = '등급')
-ex2_m$년도 <- as.numeric(str_sub(ex2_m$년도, 2, 5))
-head(ex2_m)
+ex2 <- ex2[-1]
+length(unique(unlist(ex2)))
 
-length(unique(ex2_m$등급))
 
 # 2) 결측치는 전체 데이터의 최빈값으로 대치
+#sol1)
 library(stringr)
+ex2[sapply(ex2, str_detect, '\\.')] <- getmode(unlist(ex2))
 
-ex2_m$등급[str_detect(ex2_m$등급, '\\.')] <- getmode(ex2_m$등급)
-ex2[sapply(ex2, str_detect, '\\.')] <- getmode(ex2_m$등급)
+#sol2)
+ex2[ex2 == '.'] <- getmode(unlist(ex2))
 
 
 # 3) 점수가 가장 낮은 연도와 점수가 가장 높은 연도의 두 점수의 차이를 출력
 #    (연도별 총합 기준)
-colnames(ex2)[-1] <- str_sub(colnames(ex2)[-1], 2, 5)
-ex2
+v1 <- sort(unique(unlist(ex2)))
+v2 <- seq(100, 100 + (length(v1) - 1) * 10, 10)
 
-bogi <- unique(ex2_m$등급)[order(unique(ex2_m$등급))]
-
-f_score <- function(x) {
-  vscore <- c()
-  for (i in x) {
-    vscore <- c(vscore, 100 + (which(bogi == i) - 1) * 10)
-  }
-  return(sum(vscore))
+f1 <- function(x) {
+  v2[v1 == x]
 }
-f_score(ex2$`2000`)
+
+ex2[ , ] <- apply(ex2, c(1, 2), f1)
+
+#연도별 총합
+colSums(ex2)
+
+#최대 최소 차이값
+max(colSums(ex2)) - min(colSums(ex2))
 
 
 # 4) 센터의 최종 점수를 출력(전체 총합 )
+sum(ex2)
+
+
+
+
+#[ 참고 ] a-z 문자열 벡터 출력 함수
+library(tidyr)
+tidyr::letters
+tidyr::LETTERS
+
+#mapping
+v1 <- letters
+v2 <- seq(100, 100 + 10 * length(v1) - 1,10)
+
+
