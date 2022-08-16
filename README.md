@@ -93,7 +93,11 @@
 #### 2022.08.10
 - KNN
 - Data Scaling
+<br/>
 
+#### 2022.08.11
+- Hierarchical Clustering
+- K-means
 
 
 
