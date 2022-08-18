@@ -1,5 +1,5 @@
 # R Summary Repository
-##### _Updated 2022.07_
+##### _Updated 2022.08_
 
 ----
 
